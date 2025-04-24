@@ -22,6 +22,7 @@ const medCardRoutes = require('./routes/medcard.routes');
 const miscRoutes = require('./routes/misc.routes');
 const adminRoutes = require('./routes/admin.routes');
 const doctorAppointment = require('./routes/doctor.routes')
+const payments= require('./routes/payment.routes')
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', authRoutes);
@@ -31,11 +32,14 @@ app.use('/api/medcards', medCardRoutes);
 app.use('/api/misc', miscRoutes);
 app.use('/api/admin',adminRoutes) 
 app.use('/api/doctor',doctorAppointment);
+app.use('/api/payment',payments)
+
+
 const snacks = ['🍕 Pizza', '🍫 Chocolate', '🍿 Popcorn', '🍪 Cookies', '🥦 Broccoli (ew?)', '🌯 Burrito'];
 const randomSnack = snacks[Math.floor(Math.random() * snacks.length)];
 
 // Start server
-app.listen(7000, '0.0.0.0', () => {
+app.listen(7002, '0.0.0.0', () => {
   console.log('🐍⚠️ Server is running on http://localhost:7000');
   console.log(`
     (¯·.¸¸.->  Welcome Dev Warrior <-.¸¸.·´¯)

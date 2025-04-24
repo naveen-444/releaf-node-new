@@ -6,11 +6,11 @@ const appointmentModel = require('../modals/appointmentmodel');
 const addNewAdminModel=require('../modals/addAdminmodel');
 const fs = require('fs');
 const path = require('path');
-
-
+ 
+ 
 //*************************************""***************************************************************/
 router.post('/doctor',async function (req,res){
-  console.log(req.body) 
+  console.log(req.body)
     try {
         const existingUser = await addNewUserModel.findOne({ email: req.body.email });
       console.log(existingUser);
@@ -27,23 +27,23 @@ router.post('/doctor',async function (req,res){
         res.status(500).json({ success: false, message: 'Internal error' });
       }
 })
-
-
+ 
+ 
 //*****************************************************/
 router.get('/get-single-user/:id', async (req, res) => {
-
+ 
 const arr = req.params.id.split(",");
   try {
     const data = await addNewUserModel.findById(arr[0]);
     const appointments = await appointmentModel.findById(arr[1]);  
-
+ 
     if (!data) {
       return res.status(404).json({ message: 'User not found' });
     }
     const imageUrl = appointments.file_name
       ? `${appointments.file_name}`
       : null;
-
+ 
     res.json({
      
       data:data,
@@ -55,14 +55,14 @@ const arr = req.params.id.split(",");
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-
+ 
+ 
 //#############################################Doctor Listing##########################################
-
+ 
 router.get('/doctor-list', async function (req, res) {
   try {
     const data = await addNewUserModel.find({role_id:'67d274af77991c523ae81683'});
-
+ 
     if (data) {
       res.json({ success: true,data: data });
     } else {
@@ -77,13 +77,13 @@ router.get('/doctor-list', async function (req, res) {
 router.get('/get-single-doctor/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+ 
     const doctor = await addNewUserModel.findById(id);
-
+ 
     if (!doctor) {
       return res.status(404).json({ success: false, message: 'Doctor not found' });
     }
-
+ 
     res.status(200).json({ success: true, data: doctor });
   } catch (error) {
     console.error('Error fetching doctor:', error);
@@ -101,11 +101,11 @@ router.post('/update-doctor/:id', async (req, res) => {
       { $set: updateData }, // Update the email
       { upsert: true } // Perform upsert
     );
-
+ 
     if (!updatedDoctor) {
       return res.status(404).json({ success: false, message: 'Doctor not found' });
     }
-
+ 
     res.status(200).json({ success: true, message: 'Doctor updated successfully', data: updatedDoctor });
   } catch (error) {
     console.error('Error updating doctor:', error);
@@ -116,27 +116,27 @@ router.post('/update-doctor/:id', async (req, res) => {
 router.post('/delete-doctor/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+ 
     const deletedDoctor = await addNewUserModel.findByIdAndDelete(id);
-
+ 
     if (!deletedDoctor) {
       return res.status(404).json({ success: false, message: 'Doctor not found' });
     }
-
+ 
     res.status(200).json({ success: true, message: 'Doctor deleted successfully' });
   } catch (error) {
     console.error('Error deleting doctor:', error);
     res.status(500).json({ success: false, message: 'Server error while deleting doctor' });
   }
 });
-
-
+ 
+ 
 //########################Staff List###################################################//
-
+ 
 router.get('/staff-list', async function (req, res) {
   try {
-    const data = await addNewUserModel.find();
-
+    const data = await addNewUserModel.find({role_id:'67d274cb77991c523ae81684'});
+ 
     if (data) {
       res.json({ success: true,data: data });
     } else {
@@ -151,13 +151,13 @@ router.get('/staff-list', async function (req, res) {
 router.get('/get-single-staff/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+ 
     const Staff = await addNewUserModel.findById(id);
-
+ 
     if (!Staff) {
       return res.status(404).json({ success: false, message: 'Staff not found' });
     }
-
+ 
     res.status(200).json({ success: true, data: Staff });
   } catch (error) {
     console.error('Error fetching Staff:', error);
@@ -169,7 +169,7 @@ router.post('/update-staff/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
+ 
     const updatedStaff =  await addNewUserModel.updateOne(
       { _id: id}, // Filter by username
       { $set: updateData }, // Update the email
@@ -178,7 +178,7 @@ router.post('/update-staff/:id', async (req, res) => {
     if (!updatedStaff) {
       return res.status(404).json({ success: false, message: 'Staff not found' });
     }
-
+ 
     res.status(200).json({ success: true, message: 'Staff updated successfully', data: updatedStaff });
   } catch (error) {
     console.error('Error updating Staff:', error);
@@ -189,24 +189,24 @@ router.post('/update-staff/:id', async (req, res) => {
 router.post('/delete-staff/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+ 
     const deletedStaff = await addNewUserModel.findByIdAndDelete(id);
-
+ 
     if (!deletedStaff) {
       return res.status(404).json({ success: false, message: 'Staff not found' });
     }
-
+ 
     res.status(200).json({ success: true, message: 'Staff deleted successfully' });
   } catch (error) {
     console.error('Error deleting staff:', error);
     res.status(500).json({ success: false, message: 'Server error while deleting staff' });
   }
 });
-
+ 
 //###########################Staff CReate###########################################################//
-
+ 
 router.post('/staff',async function (req,res){
-  console.log(req.body) 
+  console.log(req.body)
     try {
         const existingUser = await addNewUserModel.findOne({ email: req.body.email });
       console.log(existingUser);
@@ -223,65 +223,84 @@ router.post('/staff',async function (req,res){
         res.status(500).json({ success: false, message: 'Internal error' });
       }
 });
-
+ 
+//#############################################Patient Listing##########################################
+ 
+router.get('/user-list', async function (req, res) {
+  try {
+    const data = await addNewUserModel.find({role_id:'67d2749d77991c523ae81682'});
+ 
+    if (data) {
+      res.json({ success: true,data: data });
+    } else {
+      res.json({ success: false, message: 'No patient found.' });
+    }
+  } catch (error) {
+    console.error('Error fetching patient list:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong.' });
+  }
+});
+ 
 //#################################### Edit Patient Infomation#######################################//
 router.get('/get-single-patient/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+ 
     const Patient = await addNewUserModel.findById(id);
-
+ 
     if (!Patient) {
       return res.status(404).json({ success: false, message: 'Patient not found' });
     }
-
+ 
     res.status(200).json({ success: true, data: Patient });
   } catch (error) {
     console.error('Error fetching Staff:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
-
+ 
 //#################################update Patient details ################################//
 router.post('/update-patient/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
+ 
     const updatedPatient =  await addNewUserModel.updateOne(
       { _id: id}, // Filter by username
       { $set: updateData }, // Update the email
       { upsert: true } // Perform upsert
     );
-
+ 
     if (!updatedPatient) {
       return res.status(404).json({ success: false, message: 'Patent not found' });
     }
-
+ 
     res.status(200).json({ success: true, message: 'Patient Details updated successfully', data: updatedPatient });
   } catch (error) {
     console.error('Error updating Staff:', error);
     res.status(500).json({ success: false, message: 'Server error while updating Patient' });
   }
 });
-
+ 
+ 
+ 
 //############################### Delete Patient #####################################//
 router.post('/delete-patient/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+ 
     const deletedPatient = await addNewUserModel.findByIdAndDelete(id);
-
+ 
     if (!deletedPatient) {
       return res.status(404).json({ success: false, message: 'patient not found' });
     }
-
+ 
     res.status(200).json({ success: true, message: 'Patient deleted successfully' });
   } catch (error) {
     console.error('Error deleting patient:', error);
     res.status(500).json({ success: false, message: 'Server error while deleting patient' });
   }
 });
-
-
+ 
+ 
 module.exports=router;
